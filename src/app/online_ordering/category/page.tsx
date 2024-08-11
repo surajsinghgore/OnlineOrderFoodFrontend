@@ -8,14 +8,23 @@ import { db } from "@/app/config/firebase";
 import CategoryModels from "@/app/modal/CategoryModels";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/Store";
-
+interface NameType {
+  en: string;
+  he: string;
+  ru: string;
+}
 import CheckIcon from "@mui/icons-material/Check";
 import Loading from "@/app/components/loading/Loading";
 import { useTranslation } from "react-i18next";
 import { getFromLocalStorage, setInLocalStorage } from "@/app/utills/LocalStorageUtills";
 import { useRouter } from "next/navigation";
 import onloadImg from "../../../assests/white_logo.png";
-
+interface CategoryModel {
+  id: string;
+  Name: NameType;
+  ImageUrl: string;
+  // Add other properties if needed
+}
 import AOS from "aos";
 import "aos/dist/aos.css";
 interface CategoryShow {
@@ -60,7 +69,7 @@ const Category: React.FC = () => {
       });
 
       let setArray: CategoryShow[] = [];
-      categoryList.forEach((item) => {
+      categoryList.forEach((item:any) => {
         let langText = getFromLocalStorage("lang") || "en";
         const localStorageValue = getFromLocalStorage(`${item?.Name?.en}`);
         if (langText == "he") {
@@ -79,7 +88,7 @@ const Category: React.FC = () => {
       const uniqueCategories: CategoryShow[] = setArray.filter((category, index, self) => index === self.findIndex((t) => t.categoryName === category.categoryName));
       setInLocalStorage("categoryTranslate", uniqueCategories);
 
-      const translatedData: CategoryModels[] = categoryList.map((item) => ({
+      const translatedData: CategoryModels[] = categoryList.map((item:any) => ({
         ...item,
         Name: item.Name[lang as keyof typeof item.Name] || item?.Name?.en,
         enName: item.Name.en,
@@ -138,7 +147,7 @@ const Category: React.FC = () => {
                 mealName: string;
                 maxCount: number;
               }
-              const displayName = item.Name[lang as keyof typeof item.Name] || item.Name;
+              const displayName:any = item.Name[lang as keyof typeof item.Name] || item.Name;
               let isComplete = false;
               if (getFromLocalStorage("category")) {
                 const ItemsInCart: Category[] = getFromLocalStorage("category").filter((category: any) => category.mealName === item.enName);
