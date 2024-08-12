@@ -151,8 +151,11 @@ const Category: React.FC = () => {
               let isComplete = false;
               if (getFromLocalStorage("category")) {
                 const ItemsInCart: Category[] = getFromLocalStorage("category").filter((category: any) => category.mealName === item.enName);
-                let cartItems = getFromLocalStorage(`${ItemsInCart[0].mealName}`);
-                isComplete = cartItems.length === ItemsInCart[0].maxCount ? true : false;
+                if(ItemsInCart.length!==0){
+
+                  let cartItems = getFromLocalStorage(`${ItemsInCart[0].mealName}`);
+                  isComplete = cartItems.length === ItemsInCart[0].maxCount ? true : false;
+                }
               }
               return (
                 <div className="flex flex-col gap-5 py-5" key={item?.id} data-aos="flip-right">

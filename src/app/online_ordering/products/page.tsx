@@ -36,8 +36,6 @@ interface TranslatedProduct {
   ImageUrl: string;
 }
 
-type MealType = "breakfast" | "lunch" | "dinner";
-
 interface SwiperSliderProps {
   params: { id: string };
 }
@@ -252,14 +250,15 @@ const SwiperSlider: React.FC<SwiperSliderProps> = ({ params }) => {
                         <p className={`text-white  ${lang ? "rtl" : ""}`}>{t("choose")}</p>
                         <div className="flex flex-wrap gap-3  sm:grid sm:grid-cols-2 mt-5">
                           {product
-                            ?.filter((pro: ProductsModels) => pro.category == item?.Name)
+                            ?.filter((pro: ProductsModels) => pro.category === item?.Name)
                             .map((prodctItem: ProductsModels) => {
-                              // console.log(prodctItem)
-                              const mealType: MealType = prodctItem.meal.Name?.toLowerCase() as MealType;
-                              let cartData = getFromLocalStorage(`${prodctItem.meal.Name}`);
-                              // let cartData=JSON.parse(getFromLocalStorage(`${prodctItem.meal.Name}`))
+                              let cartData: ProductsModels[] = getFromLocalStorage(`${prodctItem.meal.Name}`) || [];
+                              if (typeof cartData === "string") {
+                                cartData = JSON.parse(cartData);
+                              }
 
-                              const isActive = cartData.some((cartItem: any) => cartItem.enCategory === prodctItem.enCategory && cartItem.Name === prodctItem.Name);
+                              const isActive = cartData.some((cartItem: ProductsModels) => cartItem.enCategory === prodctItem.enCategory && cartItem.enName == prodctItem.enName);
+
                               return (
                                 <div className={`flex flex-col w-[49%] cursor-pointer sm:w-[100%] px-4`} key={`${prodctItem?.id}-pro`} data-aos="fade-left">
                                   <div className={`relative productShadow rounded-3xl`} onClick={() => handleAddToCart(prodctItem)}>
@@ -270,18 +269,28 @@ const SwiperSlider: React.FC<SwiperSliderProps> = ({ params }) => {
                                     )}
                                     <Image width={349} height={70} className="w-[389px] h-[232px] object-cover rounded-3xl" src={prodctItem?.ImageUrl} alt="" priority />
                                   </div>
-                                  <h1 className={`text-black text-xl mt-4 font-semibold sm:text-md sm:font-bold sm:word-break  ${lang ? "rtl" : ""}`}>{prodctItem?.Name}</h1>
+                                  <h1 className={`text-black text-xl mt-4 font-semibold sm:text-md sm:font-bold sm:word-break ${lang ? "rtl" : ""}`}>{prodctItem?.Name}</h1>
                                 </div>
                               );
                             })}
                         </div>
 
-                        {!isLastSlide && (
+                        {swiper && swiper.slides.length === 1 ? (
+                          // Show the "Next" button as a link if there's only one slide
                           <div className="bg-[#2f52a0] p-4 mt-8 rounded-xl">
-                            <button className={`w-full text-white text-center rounded-xl textShadow  ${lang ? "rtl" : ""}`} onClick={() => swiper.slideNext()}>
-                              {t("nextBtn")}
-                            </button>
+                            <Link href={"/online_ordering/category"}>
+                              <button className={`w-full text-white text-center rounded-xl textShadow  ${lang ? "rtl" : ""}`}>{t("Next")}</button>
+                            </Link>
                           </div>
+                        ) : (
+                          // Show the "Next" button for sliding only if it's not the last slide
+                          !isLastSlide && (
+                            <div className="bg-[#2f52a0] p-4 mt-8 rounded-xl">
+                              <button className={`w-full text-white text-center rounded-xl textShadow  ${lang ? "rtl" : ""}`} onClick={() => swiper.slideNext()}>
+                                {t("nextBtn")}
+                              </button>
+                            </div>
+                          )
                         )}
                       </div>
                     </SwiperSlide>
