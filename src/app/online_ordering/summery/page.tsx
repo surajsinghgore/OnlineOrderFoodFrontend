@@ -9,7 +9,7 @@ import React, { useEffect, useState } from "react";
 import onloadImg from "../../../assests/white_logo.png";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc,serverTimestamp  } from "firebase/firestore";
 import { db } from "@/app/config/firebase";
 import { useRouter } from "next/navigation";
 import { resetCart } from "@/app/store/slice/ProductSlice";
@@ -79,6 +79,7 @@ const ViewMeals: React.FC = () => {
         schedule: selectedOptions,
         summary: mealData,
         location: locations,
+        timestamp: serverTimestamp(),
       });
       setloading(false);
 
